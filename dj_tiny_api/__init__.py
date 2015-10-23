@@ -103,7 +103,8 @@ class Endpoint(object):
             self.request = request
             request.extra['endpoint'] = self.slug
             try:
-                [f(request) for f in self.auth_checks] if self.auth_checks else None
+                if self.auth_checks:
+                    [f(request) for f in self.auth_checks]
                 self.after_auth()
                 self.get_data()
                 self.validate_data()
@@ -136,7 +137,6 @@ class Endpoint(object):
         if self.url:
             urlconf = __import__(settings.ROOT_URLCONF, {}, {}, [''])
             urlconf.urlpatterns.append(django_url(self.url, wrapped_f, name=self.slug))
-
 
     def after_auth(self):
         pass
