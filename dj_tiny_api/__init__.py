@@ -22,12 +22,12 @@ class WebError(Exception):
     default_code = 'UnexpectedError'
     source = 1
 
-    def __init__(self, code=None, message=None, extra=None, source=None, status_code=None, **kwargs):
+    def __init__(self, code=None, message=None, status_code=None, **kwargs):
 
         self.code = code or self.default_code
         self.message = message or self.code
-        self.extra = extra
         self.status_code = status_code
+        self.__dict__.update(kwargs)
 
     def __repr__(self):
         return '<{} [{}]>'.format(self.__class__.__name__, self.__dict__)
