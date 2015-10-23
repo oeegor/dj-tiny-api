@@ -138,7 +138,6 @@ class Endpoint(object):
             urlconf = __import__(settings.ROOT_URLCONF, {}, {}, [''])
             urlconf.urlpatterns.append(django_url(self.url, wrapped_f, name=self.slug))
 
-        return
 
     def after_auth(self):
         pass
