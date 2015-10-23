@@ -19,12 +19,11 @@ JsonResponse = partial(Response, content_type='application/json')
 
 class WebError(Exception):
     status_code = 500
-    default_code = 'UnexpectedError'
-    source = 1
+    _default_code = 'UnexpectedError'
 
     def __init__(self, code=None, message=None, status_code=None, **kwargs):
 
-        self.code = code or self.default_code
+        self.code = code or self._default_code
         self.message = message or self.code
         self.status_code = status_code
         self.__dict__.update(kwargs)
@@ -38,12 +37,12 @@ class WebError(Exception):
 
 class BadRequest(WebError):
     status_code = 400
-    default_code = 'BadRequest'
+    _default_code = 'BadRequest'
 
 
 class Unauthorized(WebError):
     status_code = 401
-    default_code = 'Unauthorized'
+    _default_code = 'Unauthorized'
 
 
 class NotFound(WebError):
@@ -53,26 +52,26 @@ class NotFound(WebError):
 
 class MethodNotAllowed(WebError):
     status_code = 405
-    default_code = 'MethodNotAllowed'
+    _default_code = 'MethodNotAllowed'
 
 
 class Forbidden(WebError):
     status_code = 403
-    default_code = 'Forbidden'
+    _default_code = 'Forbidden'
 
 
 class Conflict(WebError):
     status_code = 409
-    default_code = 'Conflict'
+    _default_code = 'Conflict'
 
 
 class FailedDependency(WebError):
     status_code = 424
-    default_code = 'FailedDependency'
+    _default_code = 'FailedDependency'
 
 
 class UnexpectedResult(WebError):
-    default_code = 'UnexpectedResult'
+    _default_code = 'UnexpectedResult'
 
 
 class Endpoint(object):
@@ -179,8 +178,4 @@ class Endpoint(object):
 
     def error(self, e):
         error = ujson.encode(e, ensure_ascii=False)
-        status = e.status_code
-        client_name = self.request.META.get('HTTP_X_MOTA_CLIENT_NAME')
-        if client_name in ['Mobota', 'Android']:
-            status = 200
-        return self.response(error=error, status_code=status)
+        return self.response(error=error, status_code=e.status_code)
