@@ -10,9 +10,6 @@ from typeddict import ValidationError
 import ujson
 
 
-__version__ = '0.0.1'
-
-
 logger = getLogger('dj_tiny_api')
 
 

@@ -1,7 +1,6 @@
 # coding: utf-8
 
 import os
-import dj_tiny_api
 from setuptools import setup, Command
 
 
@@ -29,7 +28,7 @@ CHANGES = open(os.path.join(os.path.dirname(__file__), 'CHANGES.md')).read()
 
 setup(
     name='dj-tiny-api',
-    version=dj_tiny_api.__version__,
+    version='0.0.1',
     packages=['dj_tiny_api'],
     include_package_data=True,
     license='MIT License',
@@ -56,5 +55,7 @@ setup(
     },
     install_requires=[
         'Django>=1.7',
+        'typeddict',
+        'ujson==1.33',
     ],
 )
