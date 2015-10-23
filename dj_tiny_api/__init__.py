@@ -25,7 +25,7 @@ class WebError(Exception):
 
         self.code = code or self._default_code
         self.message = message or self.code
-        self.status_code = status_code
+        self.status_code = status_code or self.status_code
         self.__dict__.update(kwargs)
 
     def __repr__(self):
