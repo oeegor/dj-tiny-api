@@ -1,25 +1,20 @@
-# dj-livesettings
+# dj-tiny-api
 
-Django app that provides possibility to add settings that can be changed in DB.
+A tiny toolkit to implement HTTP APIs using Django.
 
-Getting Started
-===============
+Basic Usage
+===========
 
-1. Add 'livesettings' to INSTALLED_APPS
-2. Set LIVESETTINGS_CACHE_TIME in settings.py
-3. Add livesettings in /admin/livesettings/
+    # in views.py
+    from dj_tiny_api import Endpoint
 
-Typical Usage
-=============
 
-    # in settings.py
-    FOO = 'foo'
+    @Endpoint(
+        url=r'^api/v1/foo/?$',
+        methods=['GET', 'POST'],
+    )
+    def foo_view()
+        return {'foo': 'bar'}
 
-    # in foo.py
-    from livesettings.api import live_settings
-    print(live_settings.FOO)
-    # >>> 'foo'
-
-    # if in admin we add livesetting FOO with value bar
-    print(live_settigns.FOO)
-    # >>> 'bar'
+    # this will return response with body
+    {"data": {"foo": "bar"}, "error": null}
