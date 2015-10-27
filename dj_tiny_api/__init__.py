@@ -89,7 +89,7 @@ class Endpoint(object):
         self.data_spec = data_spec
         self.result_spec = result_spec
         self.opt = opt
-        self.auth_checks = auth_checks
+        self.auth_checks = auth_checks or []
         self.slug = slug
         self.url = url
         self.methods = methods
@@ -103,8 +103,11 @@ class Endpoint(object):
             self.request = request
             request.extra['endpoint'] = self.slug
             try:
-                if self.auth_checks:
-                    [f(request) for f in self.auth_checks]
+                for auth_func in self.auth_checks:
+                    response = auth_func(request)
+                    if response:
+                        return response
+
                 self.after_auth()
                 self.get_data()
                 self.validate_data()
