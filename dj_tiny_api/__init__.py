@@ -141,18 +141,20 @@ class Endpoint(object):
             urlconf = __import__(settings.ROOT_URLCONF, {}, {}, [''])
             urlconf.urlpatterns.append(django_url(self.url, wrapped_f, name=self.slug))
 
+        return wrapped_f
+
     def after_auth(self):
         pass
 
     def get_data(self):
         if self.request.method == 'POST':
-            if self.request.META.get('CONTENT_TYPE') == 'application/x-www-form-urlencoded':
-                data = self.request.POST.dict()
-            else:
+            if self.request.META.get('CONTENT_TYPE') == 'application/json':
                 try:
                     data = ujson.loads(self.request.body or 'null')
                 except ValueError as e:
                     raise BadRequest(message='Invalid JSON: ' + str(e))
+            else:
+                data = self.request.POST.dict()
 
         elif self.request.method == 'GET':
             data = self.request.GET.dict()
