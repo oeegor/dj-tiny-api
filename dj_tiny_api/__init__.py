@@ -101,8 +101,8 @@ class Endpoint(object):
         @wraps(f)
         def wrapped_f(request, *args, **kwargs):
             self.request = request
-            request.extra['endpoint'] = self.slug
             try:
+                self.after_request_set()
                 for auth_func in self.auth_checks:
                     response = auth_func(request)
                     if response:
@@ -144,6 +144,9 @@ class Endpoint(object):
         return wrapped_f
 
     def after_auth(self):
+        pass
+
+    def after_request_set(self):
         pass
 
     def get_data(self):
