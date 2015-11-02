@@ -151,7 +151,8 @@ class Endpoint(object):
 
     def get_data(self):
         if self.request.method == 'POST':
-            if self.request.META.get('CONTENT_TYPE') == 'application/json':
+            content_type = self.request.META.get('CONTENT_TYPE')
+            if content_type and 'application/json' in content_type:
                 try:
                     data = ujson.loads(self.request.body or 'null')
                 except ValueError as e:
