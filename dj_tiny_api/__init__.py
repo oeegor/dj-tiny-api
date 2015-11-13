@@ -108,7 +108,10 @@ class Endpoint(object):
                     if response:
                         return response
 
-                self.after_auth()
+                after_auth_result = self.after_auth()
+                if isinstance(after_auth_result, Response):
+                    return after_auth_result
+
                 self.get_data()
                 self.validate_data()
 
