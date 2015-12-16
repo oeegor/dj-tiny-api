@@ -113,18 +113,21 @@ class Endpoint(object):
                     return after_auth_result
 
                 self.get_data()
-                self.validate_data()
+
+                try:
+                    self.validate_data()
+                except ValidationError as e:
+                    return self.error(BadRequest(message=str(e), extra=e.errors))
 
                 kwargs['request'] = request
                 result = f(self.data, *args, **kwargs)
             except WebError as e:
                 return self.error(e)
-            except ValidationError as e:
-                return self.error(BadRequest(message=str(e), extra=e.errors))
             except Exception as e:
                 message = 'Unexpected API error'
                 logger.error(message, exc_info=True)
                 return self.error(WebError(message=message))
+
             if result is None:
                 if self.opt:
                     return self.response('null')
