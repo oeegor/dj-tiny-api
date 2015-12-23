@@ -120,6 +120,8 @@ class Endpoint(object):
                     return self.error(BadRequest(message=str(e), extra=e.errors))
 
                 kwargs['request'] = request
+
+                self.before_view()
                 result = f(self.data, *args, **kwargs)
             except WebError as e:
                 return self.error(e)
@@ -150,6 +152,9 @@ class Endpoint(object):
         return wrapped_f
 
     def after_auth(self):
+        pass
+
+    def before_view(self):
         pass
 
     def after_request_set(self):

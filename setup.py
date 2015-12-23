@@ -28,7 +28,7 @@ CHANGES = open(os.path.join(os.path.dirname(__file__), 'CHANGES.md')).read()
 
 setup(
     name='dj-tiny-api',
-    version='0.3.0',
+    version='0.3.1',
     packages=['dj_tiny_api'],
     include_package_data=True,
     license='MIT License',
