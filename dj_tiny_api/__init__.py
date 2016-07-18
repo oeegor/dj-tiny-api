@@ -97,6 +97,7 @@ class Endpoint(object):
     def __call__(self, f):
 
         self.slug = self.slug or f.__name__
+        self.f = f
 
         @wraps(f)
         def wrapped_f(request, *args, **kwargs):
