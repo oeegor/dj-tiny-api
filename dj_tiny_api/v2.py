@@ -35,18 +35,23 @@ class TdField(f.FieldAsIs):
 
 class BaseResult(TypedDict):
 
-    ERROR_BAD_JSON = "api:bad_json"
-    ERROR_UNKNOWN = "api:unknown"
-    ERROR_VALIDATION = "api:validation"
     ERROR_AUTH = "api:auth"
+    ERROR_BAD_JSON = "api:bad_json"
     ERROR_EMPTY_REQUEST = "api:empty_request"
     ERROR_REQUEST_NOT_DICT = "api:request_data_not_dict"
+    ERROR_UNKNOWN = "api:unknown"
+    ERROR_UNKNOWN_ACCEPT = "api:unknown_accept"
+    ERROR_VALIDATION = "api:validation"
 
     data = opt(TdField)
     error = f.StringNotEmpty(required=False, choices=[
         ERROR_AUTH,
-        ERROR_VALIDATION,
+        ERROR_BAD_JSON,
+        ERROR_EMPTY_REQUEST,
+        ERROR_REQUEST_NOT_DICT,
         ERROR_UNKNOWN,
+        ERROR_UNKNOWN_ACCEPT,
+        ERROR_VALIDATION,
     ])
 
 
@@ -55,6 +60,11 @@ def unknown_error():
 
 
 class Endpoint(object):
+
+    ACCEPT_JSON = "application/json"
+    ACCEPTED_FORMATS = (
+        ACCEPT_JSON,
+    )
 
     def __init__(
         self,
@@ -76,10 +86,13 @@ class Endpoint(object):
         @wraps(f)
         def wrapped_f(request, *args, **kwargs):
             self.request = request
+            view_result = result = None
             self.request_id = request.META.get("HTTP_REQUEST_ID")
             self.format = request.META.get("HTTP_ACCEPT")
-            view_result = result = None
             try:
+                if self.format not in self.ACCEPTED_FORMATS:
+                    raise ApiError(td=BaseResult(error=BaseResult.ERROR_UNKNOWN_ACCEPT))
+
                 self.auth_check()
                 self._get_data()
                 self._validate_data()
@@ -100,8 +113,10 @@ class Endpoint(object):
                 result = BaseResult(data=view_result)
             body = result.dumps(result)
 
-            if self.format == "application/json":
+            if self.format == self.ACCEPT_JSON:
                 return HttpResponse(body, status=200, content_type=self.format)
+            else:
+                return HttpResponse(body, status=200, content_type=self.ACCEPT_JSON)
 
         if self.url:
             urlconf = __import__(settings.ROOT_URLCONF, {}, {}, [''])

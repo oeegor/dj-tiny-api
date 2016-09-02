@@ -62,3 +62,10 @@ def test_unknown_error():
     response = view(request)
     assert response.status_code == 200
     assert response.content == b'{"error":"api:unknown"}'
+
+
+def test_unknown_accept():
+    request = rf.get("", HTTP_ACCEPT="huyemoye")
+    response = view(request)
+    assert response.status_code == 200
+    assert response.content == b'{"error":"api:unknown_accept"}'
