@@ -68,11 +68,19 @@ class Endpoint(object):
     def __init__(
         self,
         data_spec=None,
+        error_spec=None,
         result_spec=None,
         slug=None,
         url=None,
     ):
         self.data_spec = data_spec
+        if error_spec:
+            if not issubclass(error_spec, BaseError):
+                raise ValueError("error_spec should inherit from BaseError")
+            self.error_spec = error_spec
+        else:
+            self.error_spec = BaseError
+
         self.result_spec = result_spec
         self.slug = slug
         self.url = url
