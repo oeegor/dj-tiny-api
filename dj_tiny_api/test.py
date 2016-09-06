@@ -39,8 +39,8 @@ def view(data, request):
 def test_validation_error():
     request = rf.get("", HTTP_ACCEPT="application/json")
     response = view(request)
-    assert response.status_code == 200
-    assert response.content == b'{"error":"api:validation"}'
+    assert response.status_code == 500
+    assert response.content == b'{"error":{"code":"api:validation"}}'
 
 
 def test_empty_response():
@@ -60,12 +60,12 @@ def test_ok():
 def test_unknown_error():
     request = rf.get("", data={"a": "invalid"}, HTTP_ACCEPT="application/json")
     response = view(request)
-    assert response.status_code == 200
-    assert response.content == b'{"error":"api:unknown"}'
+    assert response.status_code == 500
+    assert response.content == b'{"error":{"code":"api:unknown"}}'
 
 
 def test_unknown_accept():
     request = rf.get("", HTTP_ACCEPT="huyemoye")
     response = view(request)
-    assert response.status_code == 200
-    assert response.content == b'{"error":"api:unknown_accept"}'
+    assert response.status_code == 500
+    assert response.content == b'{"error":{"code":"api:unknown_accept"}}'
