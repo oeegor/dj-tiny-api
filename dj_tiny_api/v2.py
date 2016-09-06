@@ -74,12 +74,9 @@ class Endpoint(object):
         url=None,
     ):
         self.data_spec = data_spec
-        if error_spec:
-            if not issubclass(error_spec, BaseError):
-                raise ValueError("error_spec should inherit from BaseError")
-            self.error_spec = error_spec
-        else:
-            self.error_spec = BaseError
+        if error_spec and not issubclass(error_spec, BaseError):
+            raise ValueError("error_spec should inherit from BaseError")
+        self.error_spec = error_spec
 
         self.result_spec = result_spec
         self.slug = slug
