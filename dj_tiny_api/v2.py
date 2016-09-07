@@ -143,9 +143,10 @@ class Endpoint(object):
         pass
 
     def _get_data(self):
-        if self.request.method == 'POST':
-            content_type = self.request.META.get('CONTENT_TYPE')
-            if content_type == 'application/json':
+        if self.request.method == "POST":
+            content_type = self.request.META.get("CONTENT_TYPE", "")
+            content_type = content_type.split(";")[0]
+            if content_type == "application/json":
                 if not self.request.body:
                     raise BaseError(code=BaseError.ERROR_EMPTY_REQUEST)
 
