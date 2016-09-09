@@ -73,6 +73,7 @@ class Endpoint(object):
         slug=None,
         url=None,
     ):
+        self.data = None
         self.data_spec = data_spec
         if error_spec and not issubclass(error_spec, BaseError):
             raise ValueError("error_spec should inherit from BaseError")
