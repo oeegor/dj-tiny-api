@@ -166,7 +166,7 @@ class Endpoint(object):
             content_type = self.request.META.get('CONTENT_TYPE')
             if content_type and 'application/json' in content_type:
                 try:
-                    data = ujson.loads(self.request.body or 'null')
+                    data = ujson.loads(self.request.body or '{}')
                 except ValueError as e:
                     raise BadRequest(message='Invalid JSON: ' + str(e))
             else:
